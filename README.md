@@ -54,4 +54,155 @@
 * 指针相加的实质是按声明类型字节大小进行步增
 * 指针相减的实质是两个指针地址相减后，按声明类型字节大小整除后得到的**单位**值，并通过符号老判断地址前后顺序
 
+第四章 数组与指针
+----------------------------
+### 数组名的含义
+#### 一维数组
+对于
+```c
+int vector[]={1,2,3,4,5}
+```
+数组名`vector`是**数组首元素**的地址，但是其代表的是整个数组，也就是说`sizeof(vector)`是`5*sizeof(int)`。
+
+>首元素有很多种形式，可能是整型或字符型等基本类型，也可能是数组，也即多维数组
+
+#### 二维数组
+对于二维数组：
+```c
+int matrix[2][5]={
+        {1,2,3,4,5},
+        {6,7,8,9,10}
+    }
+```
+`matrix`代表首元素`matrix[0]`的地址，而首元素`matrix[0]`是个数组，意味着`matrix[0]`代表内层数组首元素`matrix[0][0]`的地址，所以则有:
+`matrix = &matrix[0] , matrix[0] = &matrix[0][0]`
+进行解引则有:
+`*matrix = matrix[0] = &matrix[0][0]`
+`**matrix = *matrix[0] = matrix[0][0]`
+
+* `matrix`的本质是一个5个元素数组的**数组**指针，但其代表的是整个二维数组，也就是其大小为`10*sizeof(int)`
+* `matrix[0]`的本质是一个5个元素数组**char**指针，但其代表的是内层一维数组，也就是起大小为`5*sizeof(int)`
+
+>**这里看到`**matrix`，刚开始本人也以为二维指针与二维数组是等价的，后来才发现这个想法是错误的。这里的`**matrix`是解引操作，跟二维指针没有任何关系。**
+
+### 多维数组与多维指针
+
+>* 二维指针对应的是指针数组，二维数组对应的是数组指针
+>* `char *pointerArray[]`定义的是`指针数组`
+>* `char (*arrayPointer)[]`定义的是`数组指针`
+>* 下面两个知识点针对的是静态分配情况。动态分配时，一维指针可以对应一维数组，而二维指针可以对应二维数组。
+
+#### 二维指针与指针数组
+对于数组
+```c
+char *titlesPointerArray[]={
+    "A Tale of Two Cities",
+    "Wuthering Heights",
+    "Don Quixote",
+    "Odyssey",
+    "Moby-Dick",
+    "Hamlet",
+    "Gulliver's Travels"
+}
+```
+这里`titlesPointerArray`是一个**指针数组**，`titlesPointerArray`本身是一个指向数组首元素`titlesPointerArray[0]`的指针，即`titlesPointerArray = &titlesPointerArray[0]`。
+
+而`titlesPointerArray[0]`又是一个指向`char`的指针，所以可以看到`titlesPointerArray`是一个**指向字符型指针的指针**，由此可以看到一个**二维指针与指针数组**是对应的。
+```c
+char *titlesPointerArray[]
+char **titlesPointerArray
+```
+是等价的。这也是为什么在`main`函数中`char **argv`和`char *argv[]`都是可以的。
+>二维指针对于处理字符串数组很有好处，动态性能好。可以不用去人为干涉元素数和各字符长度。
+
+#### 二维数组与数组指针
+对于数组
+```c
+char titlesDimensionArray[][40]={
+    "The Art of Computer Programming ",
+    "Python Programming Guide",
+    "Programming Pearl",
+    "Computer Network",
+    "Modern Perl"
+}
+```
+这里`titlesDimensionArray`是一个**二维数组**。`titlesDimensionArray`本身是一个指向数组首元素`titlesDimensionArray[0]`的指针，即`titlesDimensionArray = &titlesDimensionArray[0]`。
+
+而与指针数组不同的是，`titlesDimensionArray[0]`不再是指向char的指针，而是一个指向`有40个元素数组`的指针。同样，`titlesDimensionArray[0]`代表这40个元素数组的首元素地址，即`titlesDimensionArray[0] = &titlesDimensionArray[0][0]`。所以可以看到`titlesDimensionArray`是一个`指向数组的指针`。由此可以看到一个**二维数组与数组指针**是对应的。
+```c
+char titlesDimensionArray[][]
+char (*titlesDimensionArray)[]
+```
+是等价的。
+>这里终于可以看懂二维数组的实质了。虽然最终引用时都使用解引`**`来获取首个元素内容，但这是不同的。还有就是这种形式跟上面相比要指定内层数组的维数。相对来说更浪费空间，动态性能不好。
+
+### 动态创建数组
+鉴于数组与指针相爱相杀，我们还可以使用指针来在**堆**动态的创建数组。最终使用的时候既可以使用指针，也可以使用数组下标方式。
+>动态创建的数组由于是在堆上，所以**切记要在最后释放内存**
+#### 一维数组
+* `int *pv = (int *)malloc(size * sizeof(int))`即动态创建了一个数组pv[size]
+* 使用时既可以用pv[0]方式获取内容，也可以使用*(pv+0)来获取内容
+
+##### 使用`realloc`实现变长数组
+如果不使用C99标准，那么就不能使用变长数组了，我们只能用`realloc函数`来实现变长数组。
+
+`realloc函数`的核心功能就是用新区域替换旧的区域，这样如果新区域大于旧区域，便可实现空间的扩大，同时返回区域指针。我们可以根据这个思路来实现变长数组。
+
+#### 二维数据
+* 既然是二维，为了确定空间大小，我们使用`rows(外层)`和`columns(内层)`的概念来确定整体分配空间大小。总之总大小应该是`sizeof(rows * columns)`
+* 使用二维数组定义时，空间是连续分配的，而使用动态分配时，内存可连续，也可能不连续，需要要人为来控制。
+* 连续的空间存取速度快，但是空间利用率不高。而动态不连续的内存，空间利用率相对高些。这就是数据结构中静态链表和动态链表的优缺点的本质原因。
+* 进行动态分配时，指针维数与数组维数是对应的。
+
+##### 分配可能不连续的内存
+[image1](./nostill.gif)
+```c
+//定义一个二维指针并分配外层(rows)空间
+int **matrix = (int **)malloc(rows * sizeof(int *));
+for(i=0; i<rows; ++i)
+    *(matrix+i) = (int *)malloc(columns * sizeof(int));
+```
+两层均使用动态进行空间分配，内存区域可能连续，也可能不连续。
+##### 分配可能连续的内存
+[image2](./still.gif)
+```c
+//定义一个二维指针并分配外层(rows)空间
+int **matrix = (int **)malloc(rows * sizeof(int *));
+//在第二层分配时，先一次性规划处整个空间，然后再按行切分
+*matrix = (int *)malloc(rows * columns * sizeof(int));
+for(i=0; i<rows; ++i)
+    *(matrix+i) = (*matrix)+(columns*i);
+```
+由于分配内层时使用了整体分配，所以空间是连续的，只需要按行切分即可
+### 函数中数组的传递
+#### 一维数组的传递
+在函数参数传递一维数组时，形参可以使用两种方式，以整型为例
+`void function(int array[], ...)`，或者
+`void function(int *a, ...)`
+这两种方式都是可以的，在函数体内部，既可以使用数组形式，也可以使用指针形式。
+* 对于实参，必须是`指向整型的指针`,例：
+```c
+int vector=[]
+function(vector, ...)
+```
+####二维数组的传递
+* 对于二维数组的传递，要确定好形参的使用方式，是使用`数组指针（二维数组）`，还是`指针数组（二维指针）`
+* 传递二维数组时，一定要对应好形参和实参。
+    * 如果形参使用`数组指针（二维数组）`。那么实参必须是一个`指向数组的指针`。
+    * 如果形参使用`指针数组（二维指针）`，那么实参必须是一个`指向指针的指针`。
+
+### 其他
+* 对多维数组仅可省略最左侧一维的的大小。
+* 指针类型与解引操作是不同的
+* 二维以上的数组或指针相对难理解，尽量少使用
+* *变长数组*的支持和利用*复合字面量(composite literal)*实现*不规则数组和指针*是**C99**新增特性，目前不考虑使用
+* 数组和指针还是有区别的。数据名是**右值（常量）**，而使用指针定义的数据，指针是**左值（变量）**
+* 求一维数组的大小可以使用`index = sizeof(vector)/sizeof(int)`
+
+
+
+
+
+
+
 
