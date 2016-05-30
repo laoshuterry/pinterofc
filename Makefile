@@ -7,4 +7,4 @@ all: $(PROGS)
 	$(CC) $(CFLAGS) $@.c -o $@ 
 
 clean:
-	rm -f $(PROGS) *.o
+	rm -f $(PROGS) *.o a.out
