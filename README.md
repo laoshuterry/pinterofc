@@ -124,7 +124,7 @@ allocateArray(&vector,10,1);
 int * allocateArray(int size, int value)
 {
     int *arr = malloc(size * sizeof(int));
-    for(int=0;i<size;++i)
+    for(int i=0;i<size;++i)
         *(arr+i)=value;
     return arr;
 }
@@ -147,9 +147,9 @@ free(vector);
 
 ```c
 int * allocateArray(int *arr, int size, int value)
-{   if(arr = NULL)
+{   if(arr != NULL)
     {
-        for(int=0;i<size;++i)
+        for(int i=0;i<size;++i)
             *(arr+i)=value;
     }
     return arr;

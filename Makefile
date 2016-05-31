@@ -1,6 +1,7 @@
 CC=gcc
 CFLAGS=-ansi -Wall -DLINUX -D_GNU_SOURCE -g
-PROGS =	intro_ptr array_interpretation dimension_array_pointer var_length_array 
+PROGS =	intro_ptr array_interpretation dimension_array_pointer var_length_array allocateArray \
+funcpointer
 INC=./include
 all: $(PROGS)
 
