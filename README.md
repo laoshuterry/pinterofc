@@ -82,7 +82,9 @@ void allocateArray(int *arr, int size, int value)
 int *vector = NULL;
 allocateArray(&vector,10,1);
 ```
+
 会产生问题
+
 1. 首先函数内部虽然将地址传给了`arr`，但是紧接着`arr`的地址被重新通过`malloc`赋值，所以并没有使用`vector`的内容
 2. 函数释放后，分配的空间地址丢失，导致内存泄漏
 
@@ -165,6 +167,7 @@ allocateArray(vector,10,1);
 
 #### 函数返回指针注意的问题
 函数返回指针要注意四个事项：
+
 1. 返回未初始化的指针
 2. 返回指向无效地址的指针
 3. 返回局部变量指针
