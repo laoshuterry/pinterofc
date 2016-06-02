@@ -18,6 +18,7 @@
 int main(int argc, char const *argv[])
 {
 	/*字符串比较函数*/
+	printf("============Function of strcmp()============\n");
 	char cmd[20];
 	printf("Please enter the quit command: ");
 	scanf("%s", cmd);
@@ -27,6 +28,7 @@ int main(int argc, char const *argv[])
 		printf("Command is Wrong!\n");
 
 	/*字符串复制函数*/
+	printf("============Function of strcpy()============\n");
 	int count=0;
 	char singleWord[10];
 	char *wordList[5];
@@ -46,6 +48,17 @@ int main(int argc, char const *argv[])
 	for ( count = 0; count < 5; ++count )
 		printf("The word in the list is: %s\n", wordList[count]);
 
-
+	/*字符串拼接函数*/
+	printf("============Function of strcat()============\n");
+	char *error = "Error: ";
+	char *errorMessage = "Not enough memory";
+	char *buff = (char *)malloc(strlen(error)+strlen(errorMessage)+1);
+	strcpy(buff, error);
+	strcat(buff, errorMessage);
+	
+	printf("%s\n", buff);
+	printf("%s\n", error);
+	printf("%s\n", errorMessage);
+	
 	return 0;
 }
