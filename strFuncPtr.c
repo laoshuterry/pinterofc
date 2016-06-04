@@ -3,11 +3,11 @@
  *
  *       Filename:  strFuncPtr.c
  *
- *    Description:  :x
- *
- *
+ *    Description:  A little complex code to show how the function pointer work
+ *    				with strings.
+
  *        Version:  1.0
- *        Created:  2016年05月31日 17时52分38秒
+ *        Created:  2016年05月31日 17时52分38秒 
  *       Revision:  none
  *       Compiler:  gcc
  *
@@ -20,14 +20,14 @@ char *stringToLower(const char * string)
 {
 	char *tmp   = (char *)malloc(strlen(string)+1);
 	char *start =tmp;
-
-	while(*string)
+	int i=0;
+	while(string[i] != '\0')
 	{
-		*tmp = tolower(*string);
-		string++;
+		tmp[i] = tolower(string[i]);
+		++i;
 	}
-	*tmp='\0';
-
+	tmp[i]='\0'; 
+	
 	return start;
 }
 int CompareUnsensitive(const char *s1, const char *s2)
@@ -69,7 +69,7 @@ void display(char **argv, int size)
 {
 	int i=0;
 	for(i=0; i<size; ++i)
-		printf("%s\t", *(argv+i));
+		printf("%s\n", *(argv+i));
 }
 int main(int argc, char const *argv[])
 {
@@ -83,8 +83,10 @@ int main(int argc, char const *argv[])
 		"Gulliver's Travels"
 	};
 
-	sort(titlesPointerArray, sizeof(titlesPointerArray), CompareUnsensitive );
-	display(titlesPointerArray, sizeof(titlesPointerArray));
+	int index=sizeof(titlesPointerArray)/sizeof(char *);
+
+	sort(titlesPointerArray, index, CompareSensitive );
+	display(titlesPointerArray, index);
 
 	return 0;
 }
