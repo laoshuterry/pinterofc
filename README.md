@@ -521,3 +521,76 @@ if (!strcmp(cmd, "Quit"))
 * 结构体各成员变量需要手动初始化和释放。
 * 成员变量如果是动态分配初始化的，那么在释放时不能直接释放整个结构体，这时候成员变量所指向的堆区域还是有值的，直接释放整个结构体会造成内存泄漏。所以要先释放成员变量，然后再释放整个结构体。
 * 把以上过程组合起来，就形成了构造函数和析构函数的原型。在C中，这两个过程需要手动处理，而且高级的面向对象语言中，这两个过程被自动执行。
+
+### 结构体池
+* 在大量需要结构体操作的时候，反复创建和释放会导致程序性能下降，为了优化创建释放过程，我们可以使用先创建一个结构体池的，需要时从池中获取，不需要时返回到池中。
+* 使用以下方式可以定义一个结构体池
+```c
+#define SIZE 10
+Person *structPool[SIZE];
+```
+结构体池的大小`SIZE`是最需要考量的变量：值过大，那么池会占用大量的内存，浪费空间；值太小，程序很快就用完了池中资源，仍然会大量创建释放内存，效率仍然不理想。
+
+* 以下代码可以从池中获取结构体
+```c
+Person *getStructPool()
+{
+    int i;
+    for (i = 0; i < SIZE; ++i)
+    {
+        if (structPool[i] != NULL)
+        {
+            Person *ptr = structPool[i];
+            structPool[i] = NULL;
+            return ptr;
+        }
+    }
+
+    Person *newPerson = (Person *)malloc(sizeof(Person));
+    return newPerson;
+}
+```
+我们通过轮询池数组找到第一个不为空的成员，然后将其返回，并将此位置设为空，腾出位置。如果池中资源都为空，那么只能重新配分一块空间。
+
+* 以下代码可以将结构图存入池中
+```c
+Person *setStructPool(Person *person)
+{
+    int i;
+    for (i = 0; i < SIZE; ++i)
+    {
+        if (structPool[i] == NULL)
+        {
+            structPool[i] = person;
+            return person;
+        }
+    }
+
+    deallocatePerson(person);
+    free(person);
+    return NULL;
+}
+```
+我们通过轮询池数组找到第一个空的成员，也就意味着此位置是空的，然后将结构体地址赋给数组元素，紧接着返回指针即可。如果池中资源都不为空，也就意味着池是满的，我们只能按正常方式将其释放。
+
+> __注意:__ 存入池中资源后，返回了原指针，但是在外层我们不能将该指针释放，因为如果释放，那么池中的资源也会被释放。但是我们可以将该指针指向`NULL`。即该指针不可用。
+
+* 对于清空结构体池，可以使用一下方式
+```c
+void clearStructPool()
+{
+    int i;
+    for (i = 0; i < SIZE; ++i)
+        if(structPool[i]!=NULL)
+        {
+            deallocatePerson(structPool[i]);
+            free(structPool[i]);
+            structPool[i] = NULL;
+        }
+}
+```
+
+> __注意:__ 
+> 1. 清空顺序，先释放每个结构体内存成员的空间，然后释放整个结构体的空间，再将结构体指针指向`NULL`。这时整个释放过程才是安全完整的
+> 2. 可以使用工具`[Valgrind](http://valgrind.org/)`来检测程序是否存在内存泄漏问题。
+
