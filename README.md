@@ -10,19 +10,19 @@
 
 ## 代码列表
 
-*　`structBasic.c` - 结构体与指针的基本概念
-*　`ploy.c` - 利用C指针模拟面向对象中多态技术
-*　`strFuncPtr.c` - 利用返回指针的函数处理字符串
-*　`strMem.c` - 字符串内存分布形式
-*　`strStdOper.c` - 字符串标准库操作
-*　`allocateArray.c` - 利用返回指针的函数动态创建数组
-*　`dimension_array_pointer.c` - 多维数组与多维指针的关系
-*　`strPassing.c` - 字符串作为参数进行传递的演示
-*　`var_length_array.c` - 利用`realloc`模拟变长数组
-*　`strReturn.c` - 利用字符串理解返回指针的函数
-*　`array_interpretation.c` - 各种数组表达方式的含义与地址的联系
-*　`diffStrlenSizeof.c` - `sizeof`和`strlen`的区别
-*　`funcpointer.c` - 函数指针的使用
-*　`endian.c` - 利用类型转换判断机器大小端模式
-*　`intro_ptr.c` - 指针基本概念
+-　`structBasic.c` - 结构体与指针的基本概念
+-　`ploy.c` - 利用C指针模拟面向对象中多态技术
+-　`strFuncPtr.c` - 利用返回指针的函数处理字符串
+-　`strMem.c` - 字符串内存分布形式
+-　`strStdOper.c` - 字符串标准库操作
+-　`allocateArray.c` - 利用返回指针的函数动态创建数组
+-　`dimension_array_pointer.c` - 多维数组与多维指针的关系
+-　`strPassing.c` - 字符串作为参数进行传递的演示
+-　`var_length_array.c` - 利用`realloc`模拟变长数组
+-　`strReturn.c` - 利用字符串理解返回指针的函数
+-　`array_interpretation.c` - 各种数组表达方式的含义与地址的联系
+-　`diffStrlenSizeof.c` - `sizeof`和`strlen`的区别
+-　`funcpointer.c` - 函数指针的使用
+-　`endian.c` - 利用类型转换判断机器大小端模式
+-　`intro_ptr.c` - 指针基本概念
 
