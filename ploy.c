@@ -18,17 +18,17 @@
 #include "TYheader.h"
 /*近似根类Shape的方法定义组*/
 void displayShape(){printf("Shape\n");}
-void ShapeSetX(Shape *shape, int x){shape->x = x;}
-void ShapeSetY(Shape *shape, int y){shape->y = y;}
-int ShapeGetX(Shape *shape){return shape->x;}
-int ShapeGetY(Shape *shape){return shape->y;}
+void ShapeSetX(void *voidShape, int x){Shape *shape = (Shape*)voidShape;shape->x = x;}
+void ShapeSetY(void *voidShape, int y){Shape *shape = (Shape*)voidShape;shape->y = y;}
+int ShapeGetX(void *voidShape){Shape *shape = (Shape*)voidShape;return shape->x;}
+int ShapeGetY(void *voidShape){Shape *shape = (Shape*)voidShape;return shape->y;}
 
 /*近似派生类Rect的方法定义组*/
 void displayRect(){printf("Rect\n");}
-void RectSetW(Rect *rect, int x){rect->w = x;}
-void RectSetH(Rect *rect, int y){rect->h = y;}
-int RectGetW(Rect *rect){return rect->w;}
-int RectGetH(Rect *rect){return rect->h;}
+void RectSetW(void *voidRect, int x){Rect *rect = (Rect *)voidRect;rect->w = x;}
+void RectSetH(void *voidRect, int y){Rect *rect = (Rect *)voidRect;rect->h = y;}
+int RectGetW(void *voidRect){Rect *rect = (Rect *)voidRect;return rect->w;}
+int RectGetH(void *voidRect){Rect *rect = (Rect *)voidRect;return rect->h;}
 
 
 /*近似根类Shape的构造函数组*/
